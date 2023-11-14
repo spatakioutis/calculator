@@ -5,6 +5,24 @@ function init_screen() {
 
 function init_options() {
 
+    const clearBtn = document.querySelector("#clearBtn");
+    
+    clearBtn.addEventListener('click', () => {
+        operation = [];
+        init_screen();
+    });
+
+    const backspaceBtn = document.querySelector("#backspaceBtn");
+    
+    backspaceBtn.addEventListener('click', () => {
+
+        const screen = document.querySelector(".screen h1");
+        //let result = operation.pop();
+        if ( operation.pop() === undefined || operation.length === 0)
+            screen.textContent = "0";
+        else
+            screen.textContent = operation.join("");
+    });
 }
 
 function init_buttons() {
@@ -21,15 +39,20 @@ function init_buttons() {
             }
 
             let key_entered = e.target.textContent;
+            console.log(e.target.className);
 
             switch (e.target.className) {
                 case "number": {
                     if ( operation.length == 1 || operation.length == 3 ) {
                         operation[ operation.length - 1 ] += key_entered;
                     }
+                    else {
+                        operation.push(key_entered);
+                    }
                     break;
                 }
                 case "operator": {
+                    console.log(operation.length);
                     switch (operation.length) {
                         case 0: 
                             operation.push("0");
@@ -47,23 +70,24 @@ function init_buttons() {
                                 operation = ["Error"];
                             }
                             break;
-                        }
-                        break;
+                    }
+                    if (key_entered !== "=")
+                        operation.push(key_entered);
+                    else 
+                        operationEnded = true
+                    break;
                 }
+  
             }
-            if (key_entered === "=")
-                operationEnded = true; 
-            else 
-                operation.push(key_entered);
-            
-            const screen = document.querySelector(".screen h1");
-            screen.textContent = operation.join("");
+        const screen = document.querySelector(".screen h1");
+        screen.textContent = operation.join("");
         });
     });
 }
 
 function init_calculator() {
     init_screen();
+    init_options();
     init_buttons();
 }
 
